@@ -29,7 +29,7 @@
     "autoprefixer": "^10.4.19",
     "eslint": "^8.48.0",
     "eslint-plugin-vue": "^9.17.0",
-    "postcss": "^8.4.29",
+    "postcss": "^8.5.1",
     "sass": "^1.66.1",
     "typescript": "^5.0.2",
     "vite": "^4.5.6",
