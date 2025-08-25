@@ -19,7 +19,7 @@
     "gsap": "^3.12.2",
     "pinia": "^2.1.6",
     "three": "^0.156.0",
-    "vue": "^3.3.4"
+    "vue": "^3.5.20"
   },
   "devDependencies": {
     "@types/node": "^20.5.8",
