@@ -1,15 +1,12 @@
 <template>
-  <div
-    ref="element"
-    class="container"
-  />
+  <div ref="element" class="container" />
 </template>
 
 <script setup lang="ts">
-import {storeToRefs} from "pinia";
-import {useModelStore} from "@/stores/model-store/modelStore.ts";
+import { storeToRefs } from "pinia";
+import { useModelStore } from "@/stores/model-store/modelStore.ts";
 
-const {element} = storeToRefs(useModelStore())
+storeToRefs(useModelStore())
 </script>
 
 <style lang="scss" scoped>
