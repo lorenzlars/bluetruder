@@ -6,7 +6,8 @@
 import { storeToRefs } from "pinia";
 import { useModelStore } from "@/stores/model-store/modelStore.ts";
 
-storeToRefs(useModelStore())
+// @ts-ignore
+const { element } = storeToRefs(useModelStore())
 </script>
 
 <style lang="scss" scoped>
