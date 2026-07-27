@@ -1,53 +1,28 @@
-name: Auto-merge
+name: Dependabot auto-merge
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
+  schedule:
+    - cron: "0 * * * *"
   workflow_dispatch: {}
 
 permissions:
+  contents: write
   pull-requests: write
-  checks: read
-  contents: read
 
 jobs:
-  auto-merge:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
+  dependabot:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.actor == 'dependabot[bot]'
     steps:
-      - name: Enable auto-merge for Dependabot PR
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = context.payload.pull_request;
-            if (!pr) {
-              core.info('No pull request in context; nothing to do.');
-              return;
-            }
-            if (pr.draft) {
-              core.info(`PR #${pr.number} is a draft; skipping.`);
-              return;
-            }
-            try {
-              const { data: current } = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-              });
-
-              if (current.auto_merge) {
-                core.info(`Auto-merge already enabled for PR #${pr.number}`);
-                return;
-              }
-
-              await github.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/auto-merge', {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                merge_method: 'squash'
-              });
-              core.info(`Enabled auto-merge for PR #${pr.number}`);
-            } catch (error) {
-              core.info(`Could not enable auto-merge for PR #${pr.number}: ${error.message}`);
-            }
+      - name: Enable auto-merge for Dependabot PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}" || true
+          else
+            gh pr list --repo "${{ github.repository }}" --author "dependabot[bot]" --state open --json url --jq '.[].url' \
+              | xargs -r -n1 -I{} gh pr merge --auto --squash {} || true
+          fi
