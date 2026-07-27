@@ -1,0 +1,42 @@
+name: Auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch: {}
+
+permissions:
+  pull-requests: write
+  checks: read
+  contents: read
+
+jobs:
+  auto-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for Dependabot PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.info('No pull request in context; nothing to do.');
+              return;
+            }
+            if (pr.draft) {
+              core.info(`PR #${pr.number} is a draft; skipping.`);
+              return;
+            }
+            try {
+              await github.rest.pulls.enableAutoMerge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                merge_method: 'squash'
+              });
+              core.info(`Enabled auto-merge for PR #${pr.number}`);
+            } catch (error) {
+              core.info(`Could not enable auto-merge for PR #${pr.number}: ${error.message}`);
+            }
