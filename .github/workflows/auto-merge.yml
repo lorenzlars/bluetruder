@@ -30,7 +30,18 @@ jobs:
               return;
             }
             try {
-              await github.rest.pulls.enableAutoMerge({
+              const { data: current } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+              });
+
+              if (current.auto_merge) {
+                core.info(`Auto-merge already enabled for PR #${pr.number}`);
+                return;
+              }
+
+              await github.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/auto-merge', {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: pr.number,
