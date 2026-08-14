@@ -24,7 +24,7 @@
   "devDependencies": {
     "@types/node": "^26.1.2",
     "@types/three": "^0.182.0",
-    "@typescript-eslint/parser": "^8.66.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "autoprefixer": "^10.5.4",
     "eslint": "^9.8.0",
