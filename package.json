@@ -28,7 +28,7 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "autoprefixer": "^10.5.5",
     "eslint": "^10.10.0",
-    "eslint-plugin-vue": "^10.10.0",
+    "eslint-plugin-vue": "^10.11.0",
     "postcss": "^8.5.28",
     "sass": "^1.104.0",
     "typescript": "^6.0.3",
